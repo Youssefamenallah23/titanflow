@@ -1,0 +1,290 @@
+{
+  "name": "new beg",
+  "nodes": [
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger2').item.json.from.value[0].address }}",
+        "subject": "rfp request",
+        "message": "={{ $json.draft_email }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1120,
+        304
+      ],
+      "id": "630ef3ab-7c11-4ec2-8848-af2a7ee12f6b",
+      "name": "Send Email (Approved)",
+      "webhookId": "254e280e-6023-4a8e-bfd6-2975be1d0ae4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zMdAYSO3c15wlXZV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger2').item.json.from.value[0].address }}",
+        "subject": "respond about rfp ",
+        "message": "={{ $json.draft_email }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1376,
+        656
+      ],
+      "id": "e1bff3a4-8b9c-44e6-b86e-44586a28c434",
+      "name": "Send Email (Declined)",
+      "webhookId": "bec738c9-8f8e-4445-831e-5ea691e709af",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zMdAYSO3c15wlXZV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09V91V45PX",
+          "mode": "list",
+          "cachedResultName": "titan-work"
+        },
+        "text": "=🚀 *New DEAL Approved!*\n\n*Client:* {{ $json.client_name }}\n*Service:* {{ $json.detected_service }}\n*Quote:* {{ $json.lead_score }}\n\n*Draft Sent:*\n{{ $json.draft_email }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        -1120,
+        512
+      ],
+      "id": "401059d4-b314-441d-8494-ed724b0eb30e",
+      "name": "Send Slack",
+      "webhookId": "104297fe-2fd5-487b-a04a-5777d428ce62",
+      "credentials": {
+        "slackApi": {
+          "id": "vL0hoqvr9GRRJuCB",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.17.0.1:8000/analyze",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "attachment_0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7c91252-93d6-41aa-b444-8d6591a5648a",
+      "name": "Python Brain (Deep Analysis)1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -1600,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "approvedd"
+            }
+          ]
+        }
+      },
+      "id": "519a9b45-04e2-4f79-a0d7-bdf01203c615",
+      "name": "Manager Approval Switch1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -1376,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -2192,
+        432
+      ],
+      "id": "e0994784-05ab-409a-8a5b-6793328f141e",
+      "name": "Gmail Trigger2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zMdAYSO3c15wlXZV",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=if the {{ $json.subject }}  is rfp pass it throw",
+        "categories": {
+          "categories": [
+            {
+              "category": "rfp",
+              "description": "rfp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -1968,
+        432
+      ],
+      "id": "f0d43209-d714-44ae-8797-416c58e7eb0e",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1984,
+        640
+      ],
+      "id": "3be27a78-d243-4e43-a75e-0509bbdcc2de",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "xYJvgy9V1cKWu2n0",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Python Brain (Deep Analysis)1": [
+      {
+        "json": {
+          "status": "approved",
+          "client_name": "Tesla, Inc.",
+          "detected_service": "ai_consulting",
+          "lead_score": 60,
+          "crm_action": "Saved to DB ID #3",
+          "draft_email": "Subject: Following up on your AI Consulting Services RFP - Tesla, Inc.\n\nDear Tesla Procurement Team,\n\nThank you for your Request for Proposal regarding AI Consulting Services.\n\nWe have reviewed your needs and believe our expertise aligns well with your objectives for automation, productivity, and intelligent decision-making. We consider Tesla, Inc. a strong candidate for our services.\n\nWe are eager to submit a detailed proposal outlining our approach, experience, timeline, and pricing. Please inform us of the submission deadlines.\n\nSincerely,\n\n[Your Company Name]"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Python Brain (Deep Analysis)1": {
+      "main": [
+        [
+          {
+            "node": "Manager Approval Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager Approval Switch1": {
+      "main": [
+        [
+          {
+            "node": "Send Email (Approved)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Slack",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email (Declined)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Python Brain (Deep Analysis)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d7cfb2ad-c6a1-401f-b95d-3805913f614e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a0750893502deb37f59d4053cd86b4e84dccf0600cdced3688fe73658b835934"
+  },
+  "id": "faxa6A6xze8A8VrG",
+  "tags": []
+}
