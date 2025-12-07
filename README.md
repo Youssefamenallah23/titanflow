@@ -32,6 +32,7 @@ The system follows a **Microservices Architecture** orchestrated by Docker:
     *   **Declined:** Auto-replies with valid service list.
 
 ---
+<img width="1477" height="655" alt="image" src="https://github.com/user-attachments/assets/32422e9a-f513-49a1-b9f9-009d63cf521b" />
 
 ## 🛠 Tech Stack
 
