@@ -18,6 +18,8 @@ The system follows a **Microservices Architecture** orchestrated by Docker:
     *   Connects the AI to a local **SQLite Database**.
     *   Provides tools for **Lead Scoring** (Business Logic).
     *   Provides tools for **Write-Back** (Saving qualified leads to the CRM).
+<img width="786" height="662" alt="image" src="https://github.com/user-attachments/assets/bffb55fe-784e-49db-8fd8-6b8a0280b3a2" />
+
 
 ### 🔄 The Workflow Flow
 1.  **Ingestion:** Listens for emails containing "RFP" (Request for Proposal).
